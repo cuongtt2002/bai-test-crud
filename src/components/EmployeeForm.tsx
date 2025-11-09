@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { X, Plus } from "lucide-react";
+import { X } from "lucide-react";
 import type { IEmployee } from "@/utils/employee";
 import InputField from "./InputField";
 import { validateEmployeeForm } from "@/utils/validate";
