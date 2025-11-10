@@ -3,6 +3,7 @@ import { X } from "lucide-react";
 import type { IEmployee } from "@/utils/employee";
 import InputField from "./InputField";
 import { validateEmployeeForm } from "@/utils/validate";
+import toast from "react-hot-toast";
 
 type EmployeeFormProps = {
   id: string;
@@ -77,29 +78,38 @@ export default function EmployeeForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    const newErrors = validateEmployeeForm(form);
-    if (Object.keys(newErrors).length) {
-      setErrors(newErrors);
-      return;
-    }
+    try {
+      const newErrors = validateEmployeeForm(form);
+      if (Object.keys(newErrors).length) {
+        setErrors(newErrors);
+        return;
+      }
 
-    const employee: IEmployee = {
-      ...form,
-      id:
+      const employee: IEmployee = {
+        ...form,
+        id:
+          id ??
+          (employees.length
+            ? (Math.max(...employees.map((e) => Number(e.id))) + 1).toString()
+            : "1"),
+      };
+
+      setEmployees((prev) =>
         id !== ""
-          ? id
-          : employees.length
-          ? (Math.max(...employees.map((e) => Number(e.id))) + 1).toString()
-          : "1",
-    };
+          ? prev.map((e) => (e.id === id ? employee : e))
+          : [employee, ...prev]
+      );
 
-    setEmployees((prev) =>
-      id !== ""
-        ? prev.map((e) => (e.id === id ? employee : e))
-        : [employee, ...prev]
-    );
-
-    handleCloseModal();
+      toast.success(
+        id !== ""
+          ? "Updated employee successfully!"
+          : "Added employee successfully!"
+      );
+      handleCloseModal();
+    } catch (error) {
+      console.error(error);
+      toast.error("Something went wrong. Please try again!");
+    }
   };
 
   const handleCloseModal = () => {
