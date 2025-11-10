@@ -12,25 +12,17 @@ export default function App() {
     const saved = localStorage.getItem("employees");
     return saved ? JSON.parse(saved) : initialData;
   });
-
   const [tableIdEdit, setTableIdEdit] = useState<string>("");
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [tableIdDelete, setTableIdDelete] = useState<string>("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-
   const [sortConfig, setSortConfig] = useState<{
     field: "name" | "address";
     direction: "asc" | "desc";
   } | null>(null);
-
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
   const totalPages = Math.ceil(employees.length / itemsPerPage);
-
-  const employeesOnPage = employees.slice(
-    (currentPage - 1) * itemsPerPage,
-    currentPage * itemsPerPage
-  );
 
   useEffect(() => {
     localStorage.setItem("employees", JSON.stringify(employees));
@@ -52,11 +44,9 @@ export default function App() {
   const handleDelete = () => {
     try {
       if (!tableIdDelete) return;
-
       setEmployees((prev) => prev.filter((e) => e.id !== tableIdDelete));
       setTableIdDelete("");
       setIsDeleteModalOpen(false);
-
       toast.success("Employee deleted successfully!");
     } catch (error) {
       console.error(error);
@@ -75,6 +65,7 @@ export default function App() {
             : b[field].localeCompare(a[field])
         )
       );
+      setCurrentPage(1);
       return { field, direction };
     });
   };
@@ -86,6 +77,11 @@ export default function App() {
   const handleNextPage = () => {
     if (currentPage < totalPages) setCurrentPage(currentPage + 1);
   };
+
+  const employeesOnPage = employees.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
 
   return (
     <>
@@ -149,6 +145,7 @@ export default function App() {
                 </th>
               </tr>
             </thead>
+
             <tbody>
               {employeesOnPage.map((emp) => (
                 <tr key={emp.id} className="hover:bg-gray-50 transition-colors">
@@ -239,6 +236,7 @@ export default function App() {
           onClose={() => setIsDeleteModalOpen(false)}
         />
       </div>
+
       <Toaster position="top-right" />
     </>
   );
