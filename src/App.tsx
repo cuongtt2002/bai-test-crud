@@ -237,7 +237,7 @@ export default function App() {
         />
       </div>
 
-      <Toaster position="top-right" />
+      <Toaster position="top-center" />
     </>
   );
 }
