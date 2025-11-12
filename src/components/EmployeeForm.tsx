@@ -88,10 +88,11 @@ export default function EmployeeForm({
       const employee: IEmployee = {
         ...form,
         id:
-          id ??
-          (employees.length
+          id && id !== ""
+            ? id
+            : employees.length
             ? (Math.max(...employees.map((e) => Number(e.id))) + 1).toString()
-            : "1"),
+            : "1",
       };
 
       setEmployees((prev) =>
